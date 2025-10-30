@@ -1,0 +1,232 @@
+сортировка выбором 
+#include <vector>
+using namespace std;
+
+void selectionSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;                    // Находим индекс минимального элемента
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;               // Обновляем индекс минимума
+            }
+        }
+        swap(arr[i], arr[minIndex]);        // Меняем местами с текущей позицией
+    }
+}
+
+
+сортировка обменом
+void bubbleSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {      // Сравниваем соседние элементы
+                swap(arr[j], arr[j + 1]);   // Меняем местами если нужно
+            }
+        }
+    }
+}
+
+
+
+сортировка вставками
+void insertionSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];                   // Текущий элемент для вставки
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {    // Сдвигаем элементы больше key
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;                   // Вставляем key в правильную позицию
+    }
+}
+
+
+
+сортировка слиянием
+void merge(vector<int>& arr, int left, int mid, int right) {
+    vector<int> temp(right - left + 1);
+    int i = left, j = mid + 1, k = 0;
+    
+    while (i <= mid && j <= right) {        // Слияние двух отсортированных массивов
+        if (arr[i] <= arr[j]) temp[k++] = arr[i++];
+        else temp[k++] = arr[j++];
+    }
+    
+    while (i <= mid) temp[k++] = arr[i++];  // Добавляем оставшиеся элементы
+    while (j <= right) temp[k++] = arr[j++];
+    
+    for (int p = 0; p < k; p++) {          // Копируем обратно в исходный массив
+        arr[left + p] = temp[p];
+    }
+}
+
+void mergeSort(vector<int>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);          // Сортируем левую половину
+        mergeSort(arr, mid + 1, right);     // Сортируем правую половину
+        merge(arr, left, mid, right);       // Сливаем две половины
+    }
+}
+
+
+
+
+сортировка Шелла
+void shellSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int gap = n / 2; gap > 0; gap /= 2) { // Уменьшаем шаг каждый раз
+        for (int i = gap; i < n; i++) {
+            int temp = arr[i];
+            int j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];      // Сдвигаем элементы с шагом gap
+            }
+            arr[j] = temp;                  // Вставляем элемент в правильную позицию
+        }
+    }
+}
+
+
+
+Быстрая сортировка 
+int partition(vector<int>& arr, int low, int high) {
+    int pivot = arr[high];                  // Опорный элемент
+    int i = low - 1;                        // Индекс меньшего элемента
+    
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {              // Если элемент меньше опорного
+            i++;
+            swap(arr[i], arr[j]);           // Меняем местами
+        }
+    }
+    swap(arr[i + 1], arr[high]);            // Ставим опорный элемент на место
+    return i + 1;
+}
+
+void quickSort(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high); // Индекс разбиения
+        quickSort(arr, low, pi - 1);        // Сортируем левую часть
+        quickSort(arr, pi + 1, high);       // Сортируем правую часть
+    }
+}
+
+
+
+пирамидальная сортировка
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i;                        // Инициализируем наибольший как корень
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+    
+    if (left < n && arr[left] > arr[largest]) largest = left;
+    if (right < n && arr[right] > arr[largest]) largest = right;
+    
+    if (largest != i) {                     // Если наибольший не корень
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);           // Рекурсивно преобразуем затронутую кучу
+    }
+}
+
+void heapSort(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = n / 2 - 1; i >= 0; i--)   // Построение кучи
+        heapify(arr, n, i);
+    
+    for (int i = n - 1; i > 0; i--) {      // Извлекаем элементы из кучи
+        swap(arr[0], arr[i]);               // Перемещаем текущий корень в конец
+        heapify(arr, i, 0);                 // Вызываем heapify на уменьшенной куче
+    }
+}
+
+
+последовательный поиск
+int linearSearch(vector<int>& arr, int target) {
+    for (int i = 0; i < arr.size(); i++) {  // Проходим по всем элементам
+        if (arr[i] == target) {
+            return i;                       // Возвращаем индекс при нахождении
+        }
+    }
+    return -1;                              // Возвращаем -1 если не найдено
+}
+
+
+
+бинарный поиск
+int binarySearch(vector<int>& arr, int target) {
+    int left = 0, right = arr.size() - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2; // Находим средний индекс
+        
+        if (arr[mid] == target) return mid; // Найден элемент
+        else if (arr[mid] < target) left = mid + 1; // Ищем в правой половине
+        else right = mid - 1;               // Ищем в левой половине
+    }
+    return -1;                              // Элемент не найден
+}
+
+
+
+
+интерполирующий поиск
+int interpolationSearch(vector<int>& arr, int target) {
+    int low = 0, high = arr.size() - 1;
+    
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        if (low == high) {
+            if (arr[low] == target) return low;
+            return -1;
+        }
+        
+        // Вычисляем позицию с помощью интерполяции
+        int pos = low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low]);
+        
+        if (arr[pos] == target) return pos;  // Найден элемент
+        else if (arr[pos] < target) low = pos + 1; // Ищем в правой части
+        else high = pos - 1;                 // Ищем в левой части
+    }
+    return -1;                              // Элемент не найден
+}
+
+
+
+
+Поиск Фибоначчи
+int fibonacciSearch(vector<int>& arr, int target) {
+    int n = arr.size();
+    int fib2 = 0;                           // (m-2)-ое число Фибоначчи
+    int fib1 = 1;                           // (m-1)-ое число Фибоначчи
+    int fib = fib1 + fib2;                  // m-ое число Фибоначчи
+    
+    while (fib < n) {                       // Находим наименьшее число >= n
+        fib2 = fib1;
+        fib1 = fib;
+        fib = fib1 + fib2;
+    }
+    
+    int offset = -1;
+    while (fib > 1) {
+        int i = min(offset + fib2, n - 1);  // Проверяем элемент в позиции fib2
+        
+        if (arr[i] < target) {              // Если target больше
+            fib = fib1;
+            fib1 = fib2;
+            fib2 = fib - fib1;
+            offset = i;
+        }
+        else if (arr[i] > target) {         // Если target меньше
+            fib = fib2;
+            fib1 = fib1 - fib2;
+            fib2 = fib - fib1;
+        }
+        else return i;                      // Найден элемент
+    }
+    
+    if (fib1 == 1 && arr[offset + 1] == target) return offset + 1;
+    return -1;                              // Элемент не найден
+}
