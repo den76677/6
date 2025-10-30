@@ -1,0 +1,248 @@
+сортировка выбором
+public static void selectionSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;                    // Находим индекс минимального элемента
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;               // Обновляем индекс минимума
+            }
+        }
+        int temp = arr[i];                  // Меняем местами с текущей позицией
+        arr[i] = arr[minIndex];
+        arr[minIndex] = temp;
+    }
+}
+
+
+сортировка обменом 
+public static void bubbleSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {      // Сравниваем соседние элементы
+                int temp = arr[j];          // Меняем местами если нужно
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+
+сортировка вставками
+public static void insertionSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];                   // Текущий элемент для вставки
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {    // Сдвигаем элементы больше key
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;                   // Вставляем key в правильную позицию
+    }
+}
+
+
+
+
+сортировка слиянием
+public static void mergeSort(int[] arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);          // Сортируем левую половину
+        mergeSort(arr, mid + 1, right);     // Сортируем правую половину
+        merge(arr, left, mid, right);       // Сливаем две половины
+    }
+}
+
+private static void merge(int[] arr, int left, int mid, int right) {
+    int[] temp = new int[right - left + 1];
+    int i = left, j = mid + 1, k = 0;
+    
+    while (i <= mid && j <= right) {        // Слияние двух отсортированных массивов
+        if (arr[i] <= arr[j]) temp[k++] = arr[i++];
+        else temp[k++] = arr[j++];
+    }
+    
+    while (i <= mid) temp[k++] = arr[i++];  // Добавляем оставшиеся элементы
+    while (j <= right) temp[k++] = arr[j++];
+    
+    System.arraycopy(temp, 0, arr, left, k); // Копируем обратно в исходный массив
+}
+
+
+
+
+сортировка Шелла
+public static void shellSort(int[] arr) {
+    int n = arr.length;
+    for (int gap = n / 2; gap > 0; gap /= 2) { // Уменьшаем шаг каждый раз
+        for (int i = gap; i < n; i++) {
+            int temp = arr[i];
+            int j;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];      // Сдвигаем элементы с шагом gap
+            }
+            arr[j] = temp;                  // Вставляем элемент в правильную позицию
+        }
+    }
+}
+
+
+
+
+Быстрая Сортировка 
+public static void quickSort(int[] arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high); // Индекс разбиения
+        quickSort(arr, low, pi - 1);        // Сортируем левую часть
+        quickSort(arr, pi + 1, high);       // Сортируем правую часть
+    }
+}
+
+private static int partition(int[] arr, int low, int high) {
+    int pivot = arr[high];                  // Опорный элемент
+    int i = low - 1;                        // Индекс меньшего элемента
+    
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {              // Если элемент меньше опорного
+            i++;
+            int temp = arr[i];              // Меняем местами
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    int temp = arr[i + 1];                  // Ставим опорный элемент на место
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return i + 1;
+}
+
+
+
+
+
+пирамидальная сортировка
+public static void heapSort(int[] arr) {
+    int n = arr.length;
+    for (int i = n / 2 - 1; i >= 0; i--)   // Построение кучи
+        heapify(arr, n, i);
+    
+    for (int i = n - 1; i > 0; i--) {      // Извлекаем элементы из кучи
+        int temp = arr[0];                  // Перемещаем текущий корень в конец
+        arr[0] = arr[i];
+        arr[i] = temp;
+        heapify(arr, i, 0);                 // Вызываем heapify на уменьшенной куче
+    }
+}
+
+private static void heapify(int[] arr, int n, int i) {
+    int largest = i;                        // Инициализируем наибольший как корень
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+    
+    if (left < n && arr[left] > arr[largest]) largest = left;
+    if (right < n && arr[right] > arr[largest]) largest = right;
+    
+    if (largest != i) {                     // Если наибольший не корень
+        int temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
+        heapify(arr, n, largest);           // Рекурсивно преобразуем затронутую кучу
+    }
+}
+
+
+
+последовательный поиск
+public static int linearSearch(int[] arr, int target) {
+    for (int i = 0; i < arr.length; i++) {  // Проходим по всем элементам
+        if (arr[i] == target) {
+            return i;                       // Возвращаем индекс при нахождении
+        }
+    }
+    return -1;                              // Возвращаем -1 если не найдено
+}
+
+
+
+
+
+Бинарный поиск
+public static int binarySearch(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2; // Находим средний индекс
+        
+        if (arr[mid] == target) return mid; // Найден элемент
+        else if (arr[mid] < target) left = mid + 1; // Ищем в правой половине
+        else right = mid - 1;               // Ищем в левой половине
+    }
+    return -1;                              // Элемент не найден
+}
+
+
+
+
+
+
+интерполирующий поиск
+public static int interpolationSearch(int[] arr, int target) {
+    int low = 0, high = arr.length - 1;
+    
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        if (low == high) {
+            if (arr[low] == target) return low;
+            return -1;
+        }
+        
+        // Вычисляем позицию с помощью интерполяции
+        int pos = low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low]);
+        
+        if (arr[pos] == target) return pos;  // Найден элемент
+        else if (arr[pos] < target) low = pos + 1; // Ищем в правой части
+        else high = pos - 1;                 // Ищем в левой части
+    }
+    return -1;                              // Элемент не найден
+}
+
+
+
+
+поиск Фибоначчи
+public static int fibonacciSearch(int[] arr, int target) {
+    int n = arr.length;
+    int fib2 = 0;                           // (m-2)-ое число Фибоначчи
+    int fib1 = 1;                           // (m-1)-ое число Фибоначчи
+    int fib = fib1 + fib2;                  // m-ое число Фибоначчи
+    
+    while (fib < n) {                       // Находим наименьшее число >= n
+        fib2 = fib1;
+        fib1 = fib;
+        fib = fib1 + fib2;
+    }
+    
+    int offset = -1;
+    while (fib > 1) {
+        int i = Math.min(offset + fib2, n - 1); // Проверяем элемент в позиции fib2
+        
+        if (arr[i] < target) {              // Если target больше
+            fib = fib1;
+            fib1 = fib2;
+            fib2 = fib - fib1;
+            offset = i;
+        }
+        else if (arr[i] > target) {         // Если target меньше
+            fib = fib2;
+            fib1 = fib1 - fib2;
+            fib2 = fib - fib1;
+        }
+        else return i;                      // Найден элемент
+    }
+    
+    if (fib1 == 1 && arr[offset + 1] == target) return offset + 1;
+    return -1;                              // Элемент не найден
+}
+
